@@ -1,6 +1,7 @@
 on load:
 	set {start} to lime dye named "&aStart Game"
 	set {item} to red wool named "&c"
+	set {max} to 10
 on join:
 	set join-message to ""
 	teleport {_player} to location(0, 0, 0, world "world", 0, 0)
@@ -16,6 +17,7 @@ on click:
 		set {time::%uuid of player%} to now
 		set {_a} to {time::%uuid of player%}
 		set slot 4 of player's inventory to air
+		send action bar "&7[%base_progress_bar(player)%&7]"
 		item(player)
 		while player is online:
 			if {_a} is {time::%uuid of player%}:
@@ -45,8 +47,23 @@ on player's held item change:
 		add 1 to {score::%uuid of player%}
 		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
 		item(player)
-		if {score::%uuid of player%} is 10:
+		send action bar "&7[%base_progress_bar(player)%&7]"
+		if {score::%uuid of player%} is {max}:
 			send difference between {time::%uuid of player%} and now
 			reset(player)
 on player move:
 	cancel event
+function base_progress_bar(player: player) :: text:
+	set {_sign} to "■"
+	set {_color1} to "&b"
+	set {_color2} to "&7"
+	loop {max} times:
+		if {score::%uuid of {_player}%} >= loop-value:
+			set {_caracter} to "%{_color1}%%{_sign}%"
+		else:
+			set {_caracter} to "%{_color2}%%{_sign}%"
+		if {_result} is not set:
+			set {_result} to "%{_caracter}%"
+		else:
+			set {_result} to "%{_result}%%{_caracter}%"
+	return {_result}
