@@ -15,25 +15,32 @@ on inventory click:
 on click:
 	if player's tool is {start}:
 		set {time::%uuid of player%} to now
+		set {part::%uuid of player%} to now
 		set {_a} to {time::%uuid of player%}
 		set slot 4 of player's inventory to air
 		send action bar "&7[%base_progress_bar(player)%&7]"
 		item(player)
+		set {attempt::%uuid of player%} to 0
 		while player is online:
 			if {_a} is {time::%uuid of player%}:
-				send title "" with subtitle "&6%difference between {time::%uuid of player%} and now%" to player with fadein 0 second and fade out 1 second
+				send title "&6%difference between {time::%uuid of player%} and now%" with subtitle "&7Accuracy: %{score::%uuid of player%}/{attempt::%uuid of player%}*100%%%" to player with fadein 0 second and fade out 1 second
 				wait 1 tick
 			else:
 				stop
+command /reset:
+	trigger:
+		delete {record::%uuid of player%}
 function reset(player: player):
+	delete {attempt::%uuid of {_player}%}
 	delete {score::%uuid of {_player}%}
 	delete {time::%uuid of {_player}%}
 	delete {slot::%uuid of {_player}%}
+	delete {points::%uuid of {_player}%}
 	clear inventory of {_player}
 	set slot 4 of {_player} to {start}
-function record(player: player, time: timespan):
-	send "&6&lNew Record: &f%{_time}%" to {_player}
-	set {record::%uuid of {_player}%} to {_time}
+function record(player: player):
+	send "&6&lNew Record: &f%{points::%uuid of {_player}%}%" to {_player}
+	set {record::%uuid of {_player}%} to {points::%uuid of {_player}%}
 function item(player: player):
 	if {slot::%uuid of {_player}%} is set:
 		set slot {slot::%uuid of {_player}%} of {_player}'s inventory to air
@@ -46,18 +53,25 @@ function item(player: player):
 	set {slot::%uuid of {_player}%} to {_a}
 	set slot {slot::%uuid of {_player}%} of {_player} to {item}
 on player's held item change:
+	add 1 to {attempt::%uuid of player%}
 	if index of event-slot is {slot::%uuid of player%}:
 		add 1 to {score::%uuid of player%}
+		set {_time} to difference between {time::%uuid of player%} and now
+		set {_accuracy} to {score::%uuid of player%}/{attempt::%uuid of player%}*100
+		set {_points} to (15/ticks of difference between {part::%uuid of player%} and now)*{_accuracy}
+		add {_points} to {points::%uuid of player%}
+		set {part::%uuid of player%} to now
+		send "&6+%{_points}% (%{points::%uuid of player%}%)"
 		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
 		item(player)
 		send action bar "&7[%base_progress_bar(player)%&7]"
 		if {score::%uuid of player%} is {max}:
-			set {_time} to difference between {time::%uuid of player%} and now
-			send title "" with subtitle "&f%{_time}%" to player with fadein 0 second and fade out 1 second
-			if {_time} < {record::%uuid of player%}:
-				record(player, {_time})
+			send title "&f%{_time}%" with subtitle "&7Accuracy: %{_accuracy}%%%" to player with fadein 0 second and fade out 1 second
+			send "&6Score: %{points::%uuid of player%}%"
+			if {points::%uuid of player%} > {record::%uuid of player%}:
+				record(player)
 			if {record::%uuid of player%} is not set:
-				record(player, {_time})
+				record(player)
 			reset(player)
 on player move:
 	cancel event
