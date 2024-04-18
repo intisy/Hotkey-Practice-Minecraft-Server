@@ -13,10 +13,12 @@ on inventory click:
 	cancel event
 on click:
 	if player's tool is {start}:
+		set {time::%uuid of player%} to now
 		set slot 4 of player's inventory to air
 		item(player)
 function reset(player: player):
 	delete {score::%uuid of {_player}%}
+	delete {time::%uuid of {_player}%}
 	delete {slot::%uuid of {_player}%}
 	clear inventory of {_player}
 	set slot 4 of {_player} to {start}
@@ -36,7 +38,8 @@ on player's held item change:
 		add 1 to {score::%uuid of player%}
 		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
 		item(player)
-		if {score::%uuid of player%} is 20:
+		if {score::%uuid of player%} is 10:
+			send difference between {time::%uuid of player%} and now
 			reset(player)
 on player move:
 	cancel event
