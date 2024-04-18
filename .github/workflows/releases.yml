@@ -1,0 +1,33 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: echo "${{ secrets.PAT }}" | gh auth login --with-token
+
+      - name: Debug Releases
+        run: gh release list
+
+      - name: Create Release
+        run: gh release create ${{ github.ref_name }} -t "Release ${{ github.ref_name }}"
+
+      - name: Zip Project
+        run: |
+          find . -type f -not -path './.git/*' -not -path './.github/*' -exec zip -r server.zip {} +
+
+      - name: Upload Zip
+        run: gh release upload ${{ github.ref_name }} server.zip
+
+      - name: Delete Zip
+        run: rm server.zip

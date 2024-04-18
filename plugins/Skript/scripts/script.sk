@@ -1,0 +1,32 @@
+variables:
+	{start} = lime dye
+on join:
+	clear inventory of player
+	set join-message to ""
+	teleport player to location(0, 0, 0, world "world", 0, 0)
+	set slot 4 of player to {start}
+on damage:
+	cancel event
+on drop:
+	cancel event
+on inventory click:
+	cancel event
+on click:
+	if player's tool is {start}:
+		set slot 4 of player's inventory to air
+		item(player)
+function item(player: player):
+	if {slot::%uuid of {_player}%} is set:
+		set slot {slot::%uuid of {_player}%} of {_player}'s inventory to air
+	set {_a} to rounded down random number between 0 and 9
+	if {_a} is {slot::%uuid of {_player}%} or 9:
+		item({_player})
+		stop
+	set {slot::%uuid of {_player}%} to {_a}
+	set slot {slot::%uuid of {_player}%} of {_player} to green wool
+on player's held item change:
+	if index of event-slot is {slot::%uuid of player%}:
+		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
+		item(player)
+on player move:
+	cancel event
