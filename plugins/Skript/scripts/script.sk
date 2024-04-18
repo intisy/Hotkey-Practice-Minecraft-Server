@@ -14,8 +14,15 @@ on inventory click:
 on click:
 	if player's tool is {start}:
 		set {time::%uuid of player%} to now
+		set {_a} to {time::%uuid of player%}
 		set slot 4 of player's inventory to air
 		item(player)
+		while player is online:
+			if {_a} is {time::%uuid of player%}:
+				send title "" with subtitle "&6%difference between {time::%uuid of player%} and now%" to player with fadein 0 second and fade out 1 second
+				wait 1 tick
+			else:
+				stop
 function reset(player: player):
 	delete {score::%uuid of {_player}%}
 	delete {time::%uuid of {_player}%}
