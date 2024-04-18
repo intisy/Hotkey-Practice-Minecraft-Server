@@ -40,9 +40,9 @@ settings:
     attackDamage:
       max: 2048.0
 advancements:
-  disable-saving: false
+  disable-saving: true
   disabled:
-  - minecraft:story/disabled
+  - '*'
 commands:
   silent-commandblock-console: false
   log: true

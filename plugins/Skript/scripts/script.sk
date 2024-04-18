@@ -1,11 +1,15 @@
 on load:
-	set block at location(0, 1, 0) to end portal
+	loop 3 times:
+		loop 4 times:
+			loop 3 times:
+				set block at location((loop-value-1)-2, (loop-value-2)-2, (loop-value-3)-2) to end gateway
 	set {start} to lime dye named "&aStart Game"
 	set {item} to red wool named "&c"
 	set {max} to 10
 on join:
+	set player's gamemode to adventure
 	set join-message to ""
-	teleport player to location(0, 0, 0, world "world", 0, 0)
+	teleport player to location(0.5, 0, 0.5, world "world", 0, 0)
 	reset(player)
 on damage:
 	cancel event
