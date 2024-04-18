@@ -2,11 +2,9 @@ on load:
 	set {start} to lime dye named "&aStart Game"
 	set {item} to red wool named "&c"
 on join:
-	delete {slot::%uuid of player%}
-	clear inventory of player
 	set join-message to ""
-	teleport player to location(0, 0, 0, world "world", 0, 0)
-	set slot 4 of player to {start}
+	teleport {_player} to location(0, 0, 0, world "world", 0, 0)
+	reset(player)
 on damage:
 	cancel event
 on drop:
@@ -17,6 +15,11 @@ on click:
 	if player's tool is {start}:
 		set slot 4 of player's inventory to air
 		item(player)
+function reset(player: player):
+	delete {score::%uuid of {_player}%}
+	delete {slot::%uuid of {_player}%}
+	clear inventory of {_player}
+	set slot 4 of {_player} to {start}
 function item(player: player):
 	if {slot::%uuid of {_player}%} is set:
 		set slot {slot::%uuid of {_player}%} of {_player}'s inventory to air
@@ -30,7 +33,10 @@ function item(player: player):
 	set slot {slot::%uuid of {_player}%} of {_player} to {item}
 on player's held item change:
 	if index of event-slot is {slot::%uuid of player%}:
+		add 1 to {score::%uuid of player%}
 		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
 		item(player)
+		if {score::%uuid of player%} is 20:
+			reset(player)
 on player move:
 	cancel event
