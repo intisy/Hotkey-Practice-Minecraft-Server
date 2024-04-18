@@ -4,5 +4,11 @@
     "name": "WilderPizza",
     "level": 4,
     "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "36fe3fd3-aab3-4dc4-b22f-7f3457fd742f",
+    "name": "Pizza_Toast",
+    "level": 4,
+    "bypassesPlayerLimit": false
   }
 ]
