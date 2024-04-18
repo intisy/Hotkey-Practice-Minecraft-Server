@@ -1,6 +1,8 @@
-variables:
-	{start} = lime dye
+on load:
+	set {start} to lime dye named "&aStart Game"
+	set {item} to green wool named ""
 on join:
+	delete {slot::%uuid of player%}
 	clear inventory of player
 	set join-message to ""
 	teleport player to location(0, 0, 0, world "world", 0, 0)
@@ -18,12 +20,14 @@ on click:
 function item(player: player):
 	if {slot::%uuid of {_player}%} is set:
 		set slot {slot::%uuid of {_player}%} of {_player}'s inventory to air
+	else:
+		set {slot::%uuid of {_player}%} to 4
 	set {_a} to rounded down random number between 0 and 9
 	if {_a} is {slot::%uuid of {_player}%} or 9:
 		item({_player})
 		stop
 	set {slot::%uuid of {_player}%} to {_a}
-	set slot {slot::%uuid of {_player}%} of {_player} to green wool
+	set slot {slot::%uuid of {_player}%} of {_player} to {item}
 on player's held item change:
 	if index of event-slot is {slot::%uuid of player%}:
 		play sound "entity.player.levelup" with volume 1 and pitch 1 to player
