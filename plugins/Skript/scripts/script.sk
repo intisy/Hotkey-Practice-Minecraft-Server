@@ -31,6 +31,9 @@ function reset(player: player):
 	delete {slot::%uuid of {_player}%}
 	clear inventory of {_player}
 	set slot 4 of {_player} to {start}
+function record(player: player, time: timespan):
+	send "&6&lNew Record: &f%{_time}%" to {_player}
+	set {record::%uuid of {_player}%} to {_time}
 function item(player: player):
 	if {slot::%uuid of {_player}%} is set:
 		set slot {slot::%uuid of {_player}%} of {_player}'s inventory to air
@@ -49,7 +52,12 @@ on player's held item change:
 		item(player)
 		send action bar "&7[%base_progress_bar(player)%&7]"
 		if {score::%uuid of player%} is {max}:
-			send difference between {time::%uuid of player%} and now
+			set {_time} to difference between {time::%uuid of player%} and now
+			send title "" with subtitle "&f%{_time}%" to player with fadein 0 second and fade out 1 second
+			if {_time} < {record::%uuid of player%}:
+				record(player, {_time})
+			if {record::%uuid of player%} is not set:
+				record(player, {_time})
 			reset(player)
 on player move:
 	cancel event
