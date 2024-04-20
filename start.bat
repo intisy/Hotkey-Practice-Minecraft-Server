@@ -1,5 +1,5 @@
 :start
-title Level Border Server
+title Hotkey Practice Server
 @echo off
 color 7
 echo +----------------------------------------------------+
